@@ -1,3 +1,16 @@
+/*
+* Approach:
+* This program uses a 'last' pointer (initially NULL) to manage the
+* circular list. The 'head' of the list is always 'last->next'.
+* This makes inserting at the end or beginning O(1) time complexity.
+* - Insertion (First): New node's 'next' points to head ('last->next').
+* 'last->next' is updated to point to the new node.
+* - Insertion (Last): Same as 'Insert First', but 'last' is also
+* updated to point to the new node.
+* - Deletion/Search: Traverses the list using a 'do-while' loop starting
+* from 'last->next' (head) and stopping when it returns to 'last->next'.
+* Special care is taken when deleting the 'head' or 'last' node.
+*/
 #include <iostream>
 
 using namespace std;
