@@ -1,18 +1,3 @@
-/*
-* Approach:
-* This program uses a 'head' pointer (initially NULL) to mark the start
-* of the list. Each 'Node' contains 'data', a 'next' pointer to the
-* following node, and a 'prev' pointer to the preceding node.
-* - Insertion (First): New node's 'next' points to 'head', 'head's 'prev'
-* points to new node, then 'head' is updated.
-* - Insertion (Last): Traverses to the end (tmp->next == NULL), then links
-* the new node.
-* - Insertion (After): Finds the 'key' node, then relinks 'prev' and 'next'
-* pointers to fit the new node in between.
-* - Deletion: Finds the 'key' node and "bypasses" it by linking its
-* 'prev' and 'next' nodes directly to each other.
-* - Search: Simple linear traversal.
-*/
 #include <iostream>
 
 using namespace std;
@@ -20,148 +5,162 @@ using namespace std;
 struct Node
 {
     int data;
-    Node *prev;
     Node *next;
 };
 
-Node *head = NULL;
+Node *last = NULL;
 
 void insF(int val)
 {
     Node *n = new Node;
     n->data = val;
-    n->prev = NULL;
-    n->next = head;
-
     if
     {
-        (head != NULL)
-        head->prev = n;
+        (last == NULL)
+        last = n;
+        n->next = last;
     }
-    head = n;
+    else
+    {
+        n->next = last->next;
+        last->next = n;
+    }
 }
 
 void insL(int val)
 {
     Node *n = new Node;
     n->data = val;
-    n->next = NULL;
-
     if
     {
-        (head == NULL)
-        n->prev = NULL;
-        head = n;
-        return;
+        (last == NULL)
+        last = n;
+        n->next = last;
     }
-
-    Node *tmp = head;
-    while
+    else
     {
-        (tmp->next != NULL)
-        tmp = tmp->next;
+        n->next = last->next;
+        last->next = n;
+        last = n;
     }
-    tmp->next = n;
-    n->prev = tmp;
 }
 
 void insA(int key, int val)
 {
-    Node *n = new Node;
-    n->data = val;
-
-    Node *tmp = head;
-    while
-    {
-        (tmp != NULL && tmp->data != key)
-        tmp = tmp->next;
-    }
-
     if
     {
-        (tmp == NULL)
-        cout << "Node to insert after not found." << endl;
-        delete n;
+        (last == NULL)
+        cout << "List is empty." << endl;
         return;
     }
 
-    n->next = tmp->next;
-    n->prev = tmp;
-    
-    if
+    Node *tmp = last->next;
+    do
     {
-        (tmp->next != NULL)
-        tmp->next->prev = n;
-    }
-    tmp->next = n;
+        if (tmp->data == key)
+        {
+            Node *n = new Node;
+            n->data = val;
+            n->next = tmp->next;
+            tmp->next = n;
+            if (tmp == last)
+            {
+                last = n;
+            }
+            return;
+        }
+        tmp = tmp->next;
+    } while (tmp != last->next);
+
+    cout << "Node not found." << endl;
 }
 
 void delN(int key)
 {
-    Node *tmp = head;
-    while
-    {
-        (tmp != NULL && tmp->data != key)
-        tmp = tmp->next;
-    }
-
     if
     {
-        (tmp == NULL)
-        cout << "Node not found." << endl;
+        (last == NULL)
+        cout << "List is empty." << endl;
         return;
     }
 
-    if
-    {
-        (tmp->prev != NULL)
-        tmp->prev->next = tmp->next;
-    }
-    else
-    {
-        head = tmp->next;
-    }
+    Node *curr = last->next;
+    Node *prev = last;
 
-    if
+    do
     {
-        (tmp->next != NULL)
-        tmp->next->prev = tmp->prev;
-    }
+        if (curr->data == key)
+        {
+            if (curr == last->next && curr == last)
+            {
+                last = NULL;
+            }
+            else if (curr == last->next)
+            {
+                last->next = curr->next;
+            }
+            else if (curr == last)
+            {
+                prev->next = last->next;
+                last = prev;
+            }
+            else
+            {
+                prev->next = curr->next;
+            }
+            delete curr;
+            cout << "Node deleted." << endl;
+            return;
+        }
+        prev = curr;
+        curr = curr->next;
+    } while (curr != last->next);
 
-    delete tmp;
-    cout << "Node deleted." << endl;
+    cout << "Node not found." << endl;
 }
 
 void search(int key)
 {
-    Node *tmp = head;
-    int pos = 1;
-    while
+    if
     {
-        (tmp != NULL)
-        if
+        (last == NULL)
+        cout << "List is empty." << endl;
+        return;
+    }
+
+    Node *tmp = last->next;
+    int pos = 1;
+    do
+    {
+        if (tmp->data == key)
         {
-            (tmp->data == key)
             cout << "Node found at position " << pos << endl;
             return;
         }
         tmp = tmp->next;
         pos++;
-    }
+    } while (tmp != last->next);
+
     cout << "Node not found." << endl;
 }
 
 void disp()
 {
-    Node *tmp = head;
-    cout << "List: NULL <-> ";
-    while
+    if
     {
-        (tmp != NULL)
-        cout << tmp->data << " <-> ";
-        tmp = tmp->next;
+        (last == NULL)
+        cout << "List is empty." << endl;
+        return;
     }
-    cout << "NULL" << endl;
+
+    Node *tmp = last->next;
+    cout << "List: ";
+    do
+    {
+        cout << tmp->data << " -> ";
+        tmp = tmp->next;
+    } while (tmp != last->next);
+    cout << "(head: " << last->next->data << ")" << endl;
 }
 
 int main()
@@ -169,7 +168,7 @@ int main()
     int ch, val, key;
     do
     {
-        cout << "\n--- DLL Menu ---" << endl;
+        cout << "\n--- CLL Menu ---" << endl;
         cout << "1. Insert First" << endl;
         cout << "2. Insert Last" << endl;
         cout << "3. Insert After Node" << endl;
