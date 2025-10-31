@@ -1,3 +1,15 @@
+/*
+* Approach:
+* The list is hard-coded as per the example.
+* The 'disp' function takes the 'last' pointer. The head of the list
+* is 'last->next'.
+* A 'do-while' loop is used to traverse the list, starting from the head.
+* The loop continues as long as 'tmp != last->next' (i.e., until it
+* loops back to the head).
+* After the loop finishes, the head's value ('tmp->data') is printed
+* one more time to fulfill the "repeating value of head node at the end"
+* requirement.
+*/
 #include <iostream>
 
 using namespace std;
